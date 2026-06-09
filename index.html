@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MISTIMI</title>
+<link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@100;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--cream:#FAF8F3;--cream2:#F2EFE8;--black:#111;--gray:#999;--border:#E5E2DA;--wa:#25D366}
+html{scroll-behavior:smooth}
+body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:300;background:var(--cream);color:var(--black);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--cream);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px}
+.nav-logo{font-size:17px;font-weight:100;letter-spacing:.28em}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.nav-hamburger span{width:22px;height:1px;background:var(--black);display:block}
+.nav-desktop{display:flex;align-items:center;gap:28px}
+.nav-links{display:flex;gap:28px;font-size:11px;letter-spacing:.14em;font-weight:300}
+.nav-links a:hover{opacity:.45;transition:opacity .2s}
+.nav-cta{background:var(--black);color:var(--cream);padding:9px 20px;font-size:10px;letter-spacing:.16em;cursor:pointer;border:none;font-family:inherit;font-weight:300}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--border);z-index:99;flex-direction:column;padding:16px 20px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:13px 0;font-size:13px;border-bottom:1px solid var(--border);letter-spacing:.1em;font-weight:300}
+.mobile-menu a:last-child{border:none}
+
+/* HERO */
+.hero{margin-top:56px;position:relative;height:88vh;min-height:500px;overflow:hidden}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;display:flex;align-items:flex-end}
+.slide.active{opacity:1}
+.slide-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.72) 0%,rgba(17,17,17,.08) 55%,transparent 100%)}
+.slide-content{position:relative;z-index:2;padding:0 24px 72px;color:#fff}
+.slide-note{font-size:9px;letter-spacing:.28em;color:rgba(255,255,255,.6);margin-bottom:10px;font-weight:300}
+.slide-title{font-size:38px;font-weight:100;line-height:1.1;margin-bottom:10px;letter-spacing:.04em}
+.slide-sub{font-size:12px;color:rgba(255,255,255,.65);margin-bottom:22px;line-height:1.6;font-weight:300;max-width:280px}
+.hero-btns{display:flex;gap:10px}
+.btn-primary{background:#fff;color:var(--black);padding:12px 26px;font-size:10px;letter-spacing:.16em;cursor:pointer;border:none;font-family:inherit;font-weight:300}
+.btn-outline{border:1px solid rgba(255,255,255,.5);color:#fff;padding:11px 26px;font-size:10px;letter-spacing:.16em;cursor:pointer;background:none;font-family:inherit;font-weight:300}
+.hero-dots{position:absolute;bottom:26px;left:24px;display:flex;gap:6px;z-index:10}
+.dot{width:18px;height:1px;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s}
+.dot.active{background:#fff;width:32px}
+.hero-counter{position:absolute;bottom:22px;right:24px;font-size:10px;letter-spacing:.14em;color:rgba(255,255,255,.5);z-index:10;font-weight:300}
+
+/* SECTIONS */
+.section{padding:60px 20px}
+.packs-section{background:var(--cream2);padding:60px 20px}
+.reviews-section{padding:60px 20px}
+.form-section{background:var(--black);color:var(--cream);padding:60px 20px}
+.section-header{margin-bottom:36px}
+.section-title{font-size:22px;font-weight:100;letter-spacing:.06em;margin-bottom:5px}
+.section-sub{font-size:9px;color:var(--gray);letter-spacing:.22em;font-weight:300}
+
+/* PRODUCTS */
+.products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.product-card{cursor:pointer}
+.product-img{aspect-ratio:3/4;background:var(--cream2);overflow:hidden;position:relative;margin-bottom:12px}
+.product-img img{transition:transform .6s ease}
+.product-card:active .product-img img{transform:scale(1.04)}
+.product-badge{position:absolute;top:10px;left:10px;background:var(--black);color:var(--cream);font-size:8px;padding:3px 8px;letter-spacing:.14em;font-weight:300}
+.product-note{font-size:9px;color:var(--gray);letter-spacing:.16em;margin-bottom:3px}
+.product-name{font-size:13px;font-weight:300;margin-bottom:4px;letter-spacing:.04em}
+.product-price{font-size:13px;font-weight:300}
+.browse-cta{text-align:center;margin-top:36px}
+.btn-browse{border:1px solid var(--black);color:var(--black);padding:14px 32px;font-size:10px;letter-spacing:.18em;cursor:pointer;background:none;font-family:inherit;font-weight:300;width:100%;max-width:320px}
+
+/* PACKS */
+.packs-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--border)}
+.pack-card{background:var(--cream2);padding:24px 20px;cursor:pointer;display:flex;align-items:center;gap:18px}
+.pack-num{font-size:11px;color:var(--gray);letter-spacing:.1em;font-weight:100;flex-shrink:0;width:24px}
+.pack-body{flex:1}
+.pack-name{font-size:14px;font-weight:300;margin-bottom:5px;letter-spacing:.04em}
+.pack-desc{font-size:11px;color:var(--gray);line-height:1.6;margin-bottom:8px;font-weight:300}
+.pack-footer{display:flex;justify-content:space-between;align-items:center}
+.pack-price{font-size:11px;letter-spacing:.1em;font-weight:300}
+.pack-arrow{font-size:14px;color:var(--gray)}
+
+/* REVIEWS */
+.reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px}
+.review-item{position:relative;aspect-ratio:1;overflow:hidden;background:var(--cream2)}
+.review-big{grid-column:span 2;aspect-ratio:16/9}
+.review-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.6) 0%,transparent 55%);display:flex;align-items:flex-end;padding:14px}
+.review-text{color:#fff;font-size:11px;line-height:1.5;font-weight:300}
+.review-stars{color:#E8C97A;font-size:10px;margin-bottom:3px;letter-spacing:.1em}
+
+/* FORM */
+.form-headline{font-size:28px;font-weight:100;line-height:1.2;margin-bottom:12px;letter-spacing:.04em}
+.form-tagline{font-size:12px;color:#888;line-height:1.7;margin-bottom:22px;font-weight:300}
+.wa-contact{display:inline-flex;align-items:center;gap:8px;border:1px solid #2a2a2a;padding:11px 16px;font-size:11px;color:var(--cream);cursor:pointer;margin-bottom:40px;font-weight:300;letter-spacing:.08em}
+.wa-dot{width:6px;height:6px;border-radius:50%;background:var(--wa);flex-shrink:0}
+.order-form{display:flex;flex-direction:column;gap:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:9px;letter-spacing:.18em;color:#666;font-weight:300}
+.form-group input,.form-group select,.form-group textarea{background:transparent;border:none;border-bottom:1px solid #2a2a2a;color:var(--cream);padding:10px 0;font-size:13px;font-family:inherit;font-weight:300;outline:none;-webkit-appearance:none;border-radius:0}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-bottom-color:#fff}
+.form-group select option{background:#111}
+.form-group textarea{resize:none;height:68px}
+.btn-order{background:var(--cream);color:var(--black);border:none;padding:15px;font-size:10px;letter-spacing:.18em;cursor:pointer;font-family:inherit;font-weight:300;margin-top:6px}
+
+/* FOOTER */
+footer{background:var(--cream2);border-top:1px solid var(--border);padding:28px 20px;text-align:center}
+.footer-logo{font-size:14px;font-weight:100;letter-spacing:.28em;margin-bottom:6px}
+.footer-copy{font-size:10px;color:var(--gray);font-weight:300;letter-spacing:.06em}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:24px;right:20px;z-index:200;background:var(--wa);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(37,211,102,.3)}
+.wa-float svg{width:24px;height:24px;fill:#fff}
+
+/* CATALOG PAGE */
+#catalog-page{display:none;min-height:100vh;padding-top:56px}
+.catalog-layout{display:flex;flex-direction:column}
+.catalog-sidebar{padding:20px;border-bottom:1px solid var(--border);background:var(--cream)}
+.search-wrap{margin-bottom:16px}
+.search-input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:10px 0;font-size:13px;outline:none;color:var(--black);font-family:inherit;font-weight:300}
+.search-input:focus{border-bottom-color:var(--black)}
+.sidebar-filters{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.filter-group h4{font-size:9px;letter-spacing:.18em;color:var(--gray);margin-bottom:10px;font-weight:300}
+.filter-options-row{display:flex;flex-wrap:wrap;gap:6px}
+.filter-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);padding:5px 10px;font-size:10px;cursor:pointer;border-radius:20px;letter-spacing:.06em;font-weight:300}
+.filter-chip input{width:11px;height:11px;accent-color:var(--black)}
+.catalog-main{flex:1;padding:24px 20px}
+.catalog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.catalog-title{font-size:18px;font-weight:100;letter-spacing:.08em}
+.catalog-count{font-size:11px;color:var(--gray);font-weight:300}
+.catalog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.back-btn{background:none;border:none;font-size:11px;cursor:pointer;color:var(--gray);letter-spacing:.1em;display:flex;align-items:center;gap:5px;padding:0;margin-bottom:18px;font-family:inherit;font-weight:300}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(17,17,17,.55);z-index:300;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--cream);padding:24px 20px 40px;width:100%;max-height:88vh;overflow-y:auto;border-radius:14px 14px 0 0}
+.modal-handle{width:32px;height:2px;background:var(--border);border-radius:2px;margin:0 auto 22px}
+.modal h3{font-size:16px;font-weight:100;letter-spacing:.1em;margin-bottom:20px}
+.modal .form-group input,.modal .form-group select,.modal .form-group textarea{color:var(--black);border-bottom-color:var(--border)}
+.modal .form-group input:focus,.modal .form-group select:focus{border-bottom-color:var(--black)}
+.modal .form-group select option{background:var(--cream);color:var(--black)}
+.modal .form-group label{color:var(--gray)}
+.modal .btn-order{background:var(--black);color:var(--cream)}
+
+/* DESKTOP */
+@media(min-width:768px){
+  nav{padding:0 56px;height:64px}
+  .nav-hamburger{display:none}
+  .nav-desktop{display:flex}
+  .hero{margin-top:64px;height:94vh}
+  .slide-content{padding:0 88px 88px;max-width:520px}
+  .slide-title{font-size:58px}
+  .slide-sub{font-size:14px;max-width:340px}
+  .section,.packs-section,.reviews-section,.form-section{padding:88px 56px}
+  .section-title{font-size:26px}
+  .products-grid{grid-template-columns:repeat(4,1fr);gap:28px}
+  .packs-grid{grid-template-columns:repeat(2,1fr)}
+  .reviews-grid{grid-template-columns:repeat(3,1fr)}
+  .review-big{grid-column:span 2;grid-row:span 2;aspect-ratio:1}
+  .form-layout{display:grid;grid-template-columns:1fr 1fr;gap:88px}
+  .form-headline{font-size:38px}
+  .wa-contact{margin-bottom:0}
+  footer{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:36px 56px}
+  .footer-logo{margin-bottom:0}
+  .catalog-layout{flex-direction:row}
+  .catalog-sidebar{width:240px;flex-shrink:0;border-bottom:none;border-right:1px solid var(--border);padding:32px 24px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto}
+  .sidebar-filters{display:block}
+  .filter-group{margin-bottom:28px}
+  .filter-options-row{flex-direction:column;gap:8px}
+  .filter-chip{border:none;border-radius:0;padding:0;font-size:12px}
+  .catalog-main{padding:36px 48px}
+  .catalog-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .modal-overlay{align-items:center}
+  .modal{width:460px;max-height:85vh;border-radius:0;padding:36px 40px}
+  .modal-handle{display:none}
+}
+@media(max-width:767px){
+  .nav-hamburger{display:flex}
+  .nav-desktop{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">MISTIMI</div>
+  <div class="nav-desktop">
+    <div class="nav-links">
+      <a href="#" onclick="showPage('home');return false">Accueil</a>
+      <a href="#" onclick="showPage('catalog');return false">Catalogue</a>
+      <a href="#packs">Coffrets</a>
+      <a href="#contact">Commander</a>
+    </div>
+    <button class="nav-cta" onclick="openOrderModal()">COMMANDER</button>
+  </div>
+  <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="showPage('home');toggleMenu();return false">Accueil</a>
+  <a href="#" onclick="showPage('catalog');toggleMenu();return false">Catalogue</a>
+  <a href="#packs" onclick="toggleMenu()">Coffrets</a>
+  <a href="#contact" onclick="toggleMenu()">Commander</a>
+  <a href="https://wa.me/212684211599" target="_blank" style="color:var(--wa)">WhatsApp →</a>
+</div>
+
+<!-- HOME -->
+<div id="home-page">
+
+<section class="hero">
+  <div class="slide active" id="slide-0">
+    <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1541643600914-78b084683702?w=1400&q=85')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <div class="slide-note">ORIENTAL · EAU DE PARFUM</div>
+      <div class="slide-title">Ambre<br>Noir</div>
+      <div class="slide-sub">Un sillage envoûtant de bois précieux et de musc chaud</div>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="openOrderModal()">COMMANDER</button>
+        <button class="btn-outline" onclick="showPage('catalog')">DÉCOUVRIR</button>
+      </div>
+    </div>
+  </div>
+  <div class="slide" id="slide-1">
+    <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1400&q=85')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <div class="slide-note">FLORAL · EAU DE PARFUM</div>
+      <div class="slide-title">Rose<br>Éternelle</div>
+      <div class="slide-sub">Pétales de rose de Turquie et notes poudrées de oud</div>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="openOrderModal()">COMMANDER</button>
+        <button class="btn-outline" onclick="showPage('catalog')">DÉCOUVRIR</button>
+      </div>
+    </div>
+  </div>
+  <div class="slide" id="slide-2">
+    <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1400&q=85')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <div class="slide-note">AQUATIQUE · EAU DE TOILETTE</div>
+      <div class="slide-title">Bleu<br>Infini</div>
+      <div class="slide-sub">Fraîcheur marine et agrumes pour l'homme moderne</div>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="openOrderModal()">COMMANDER</button>
+        <button class="btn-outline" onclick="showPage('catalog')">DÉCOUVRIR</button>
+      </div>
+    </div>
+  </div>
+  <div class="slide" id="slide-3">
+    <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1400&q=85')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-content">
+      <div class="slide-note">UNISEXE · EAU DE PARFUM</div>
+      <div class="slide-title">Oud<br>Royal</div>
+      <div class="slide-sub">La majesté du bois de oud sublimée par des épices rares</div>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="openOrderModal()">COMMANDER</button>
+        <button class="btn-outline" onclick="showPage('catalog')">DÉCOUVRIR</button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-dots">
+    <div class="dot active" onclick="goToSlide(0)"></div>
+    <div class="dot" onclick="goToSlide(1)"></div>
+    <div class="dot" onclick="goToSlide(2)"></div>
+    <div class="dot" onclick="goToSlide(3)"></div>
+  </div>
+  <div class="hero-counter" id="hero-counter">01 / 04</div>
+</section>
+
+<!-- BESTSELLERS -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-title">Meilleures Ventes</div>
+    <div class="section-sub">NOS PARFUMS LES PLUS DEMANDÉS</div>
+  </div>
+  <div class="products-grid">
+    <div class="product-card" onclick="openOrderModal()">
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1541643600914-78b084683702?w=500&q=80" alt="Ambre Noir" loading="lazy"><div class="product-badge">BEST SELLER</div></div>
+      <div class="product-note">ORIENTAL</div><div class="product-name">Ambre Noir</div><div class="product-price">420 MAD</div>
+    </div>
+    <div class="product-card" onclick="openOrderModal()">
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&q=80" alt="Rose Éternelle" loading="lazy"></div>
+      <div class="product-note">FLORAL</div><div class="product-name">Rose Éternelle</div><div class="product-price">380 MAD</div>
+    </div>
+    <div class="product-card" onclick="openOrderModal()">
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&q=80" alt="Bleu Infini" loading="lazy"><div class="product-badge">NOUVEAU</div></div>
+      <div class="product-note">AQUATIQUE</div><div class="product-name">Bleu Infini</div><div class="product-price">350 MAD</div>
+    </div>
+    <div class="product-card" onclick="openOrderModal()">
+      <div class="product-img"><img src="https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=500&q=80" alt="Oud Royal" loading="lazy"></div>
+      <div class="product-note">UNISEXE</div><div class="product-name">Oud Royal</div><div class="product-price">550 MAD</div>
+    </div>
+  </div>
+  <div class="browse-cta">
+    <button class="btn-browse" onclick="showPage('catalog')">PARCOURIR TOUS LES PARFUMS →</button>
+  </div>
+</section>
+
+<!-- PACKS / COFFRETS -->
+<section class="packs-section" id="packs">
+  <div class="section-header">
+    <div class="section-title">Coffrets</div>
+    <div class="section-sub">SÉLECTIONS CURATÉES</div>
+  </div>
+  <div class="packs-grid">
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">01</div>
+      <div class="pack-body">
+        <div class="pack-name">Coffret Oriental</div>
+        <div class="pack-desc">Ambre Noir, Oud Royal et Musc Doré — les trois piliers de la parfumerie orientale.</div>
+        <div class="pack-footer"><div class="pack-price">3 PARFUMS · 1100 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">02</div>
+      <div class="pack-body">
+        <div class="pack-name">Coffret Femme</div>
+        <div class="pack-desc">Rose Éternelle, Iris Blanc et Fleur de Soie — une féminité délicate et lumineuse.</div>
+        <div class="pack-footer"><div class="pack-price">3 PARFUMS · 980 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">03</div>
+      <div class="pack-body">
+        <div class="pack-name">Coffret Homme</div>
+        <div class="pack-desc">Bleu Infini, Cèdre Atlas et Cuir Noir — l'élégance masculine en trois actes.</div>
+        <div class="pack-footer"><div class="pack-price">3 PARFUMS · 1050 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">04</div>
+      <div class="pack-body">
+        <div class="pack-name">Coffret Découverte</div>
+        <div class="pack-desc">5 miniatures de 10ml — idéal pour explorer la collection MISTIMI.</div>
+        <div class="pack-footer"><div class="pack-price">5 MINIATURES · 450 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">05</div>
+      <div class="pack-body">
+        <div class="pack-name">Coffret Cadeau Luxe</div>
+        <div class="pack-desc">2 parfums au choix dans un écrin premium — livré avec ruban et carte personnalisée.</div>
+        <div class="pack-footer"><div class="pack-price">2 PARFUMS · 890 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="pack-card" onclick="openOrderModal()">
+      <div class="pack-num">06</div>
+      <div class="pack-body">
+        <div class="pack-name">Collection Complète</div>
+        <div class="pack-desc">Les 5 parfums phares MISTIMI à prix exclusif — pour les vrais amateurs.</div>
+        <div class="pack-footer"><div class="pack-price">5 PARFUMS · 1800 MAD</div><div class="pack-arrow">→</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="section-header">
+    <div class="section-title">Ils en parlent</div>
+    <div class="section-sub">AVIS CLIENTS</div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-item review-big">
+      <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&q=80" alt="Avis 1" loading="lazy">
+      <div class="review-overlay"><div class="review-text"><div class="review-stars">★★★★★</div>"Ambre Noir est incroyable, je reçois des compliments toute la journée." — Salma, Casablanca</div></div>
+    </div>
+    <div class="review-item">
+      <img src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80" alt="Avis 2" loading="lazy">
+      <div class="review-overlay"><div class="review-text"><div class="review-stars">★★★★★</div>"Livraison rapide, emballage soigné." — Nadia, Rabat</div></div>
+    </div>
+    <div class="review-item">
+      <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80" alt="Avis 3" loading="lazy">
+      <div class="review-overlay"><div class="review-text"><div class="review-stars">★★★★★</div>"Le coffret Oriental en cadeau, elle a adoré !" — Karim, Marrakech</div></div>
+    </div>
+    <div class="review-item">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=80" alt="Avis 4" loading="lazy">
+      <div class="review-overlay"><div class="review-text"><div class="review-stars">★★★★★</div>"Qualité vraiment premium pour ce prix." — Imane, Fès</div></div>
+    </div>
+    <div class="review-item">
+      <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80" alt="Avis 5" loading="lazy">
+      <div class="review-overlay"><div class="review-text"><div class="review-stars">★★★★★</div>"Je commande chaque saison chez MISTIMI." — Sara, Agadir</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="contact">
+  <div class="form-layout">
+    <div>
+      <div class="form-headline">Passez votre<br>commande</div>
+      <div class="form-tagline">Remplissez le formulaire et nous vous confirmons via WhatsApp dans les 2 heures. Livraison partout au Maroc.</div>
+      <a href="https://wa.me/212684211599" target="_blank" class="wa-contact"><div class="wa-dot"></div>Discuter sur WhatsApp</a>
+    </div>
+    <div class="order-form">
+      <div class="form-row">
+        <div class="form-group"><label>PRÉNOM</label><input type="text" placeholder="Votre prénom" autocomplete="given-name"></div>
+        <div class="form-group"><label>NOM</label><input type="text" placeholder="Votre nom" autocomplete="family-name"></div>
+      </div>
+      <div class="form-group"><label>TÉLÉPHONE</label><input type="tel" placeholder="06XXXXXXXX" autocomplete="tel"></div>
+      <div class="form-group"><label>VILLE</label><input type="text" placeholder="Casablanca, Rabat..." autocomplete="address-level2"></div>
+      <div class="form-group"><label>PARFUM / COFFRET</label>
+        <select>
+          <option value="">Sélectionner...</option>
+          <optgroup label="PARFUMS">
+            <option>Ambre Noir 100ml — 420 MAD</option>
+            <option>Rose Éternelle 100ml — 380 MAD</option>
+            <option>Bleu Infini 100ml — 350 MAD</option>
+            <option>Oud Royal 100ml — 550 MAD</option>
+            <option>Musc Doré 100ml — 390 MAD</option>
+          </optgroup>
+          <optgroup label="COFFRETS">
+            <option>Coffret Oriental — 1100 MAD</option>
+            <option>Coffret Femme — 980 MAD</option>
+            <option>Coffret Homme — 1050 MAD</option>
+            <option>Coffret Découverte — 450 MAD</option>
+            <option>Coffret Cadeau Luxe — 890 MAD</option>
+            <option>Collection Complète — 1800 MAD</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group"><label>NOTE</label><textarea placeholder="Quantité, demande spéciale, message cadeau..."></textarea></div>
+      <button class="btn-order" onclick="submitOrderMain()">CONFIRMER LA COMMANDE →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">MISTIMI</div>
+  <div class="footer-copy">© 2025 · Livraison partout au Maroc</div>
+</footer>
+</div>
+
+<!-- CATALOG PAGE -->
+<div id="catalog-page">
+  <div class="catalog-layout">
+    <aside class="catalog-sidebar">
+      <button class="back-btn" onclick="showPage('home')">← Retour</button>
+      <div class="search-wrap">
+        <input class="search-input" type="text" placeholder="Rechercher un parfum..." id="search-input" oninput="filterCatalog()">
+      </div>
+      <div class="sidebar-filters">
+        <div class="filter-group">
+          <h4>FAMILLE</h4>
+          <div class="filter-options-row">
+            <label class="filter-chip"><input type="checkbox" value="oriental" onchange="filterCatalog()" checked> Oriental</label>
+            <label class="filter-chip"><input type="checkbox" value="floral" onchange="filterCatalog()" checked> Floral</label>
+            <label class="filter-chip"><input type="checkbox" value="aquatique" onchange="filterCatalog()" checked> Aquatique</label>
+            <label class="filter-chip"><input type="checkbox" value="boisé" onchange="filterCatalog()" checked> Boisé</label>
+            <label class="filter-chip"><input type="checkbox" value="musqué" onchange="filterCatalog()" checked> Musqué</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h4>POUR</h4>
+          <div class="filter-options-row">
+            <label class="filter-chip"><input type="checkbox" value="femme" onchange="filterCatalog()" checked> Femme</label>
+            <label class="filter-chip"><input type="checkbox" value="homme" onchange="filterCatalog()" checked> Homme</label>
+            <label class="filter-chip"><input type="checkbox" value="unisexe" onchange="filterCatalog()" checked> Unisexe</label>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="catalog-main">
+      <div class="catalog-header">
+        <div class="catalog-title">Catalogue</div>
+        <div class="catalog-count" id="catalog-count"></div>
+      </div>
+      <div class="catalog-grid" id="catalog-grid"></div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>Commander</h3>
+    <div class="order-form">
+      <div class="form-row">
+        <div class="form-group"><label>PRÉNOM</label><input type="text" placeholder="Prénom" autocomplete="given-name"></div>
+        <div class="form-group"><label>NOM</label><input type="text" placeholder="Nom" autocomplete="family-name"></div>
+      </div>
+      <div class="form-group"><label>TÉLÉPHONE</label><input type="tel" placeholder="06XXXXXXXX" autocomplete="tel"></div>
+      <div class="form-group"><label>PARFUM / COFFRET</label>
+        <select>
+          <option value="">Sélectionner...</option>
+          <optgroup label="PARFUMS">
+            <option>Ambre Noir 100ml — 420 MAD</option>
+            <option>Rose Éternelle 100ml — 380 MAD</option>
+            <option>Bleu Infini 100ml — 350 MAD</option>
+            <option>Oud Royal 100ml — 550 MAD</option>
+            <option>Musc Doré 100ml — 390 MAD</option>
+          </optgroup>
+          <optgroup label="COFFRETS">
+            <option>Coffret Oriental — 1100 MAD</option>
+            <option>Coffret Femme — 980 MAD</option>
+            <option>Coffret Homme — 1050 MAD</option>
+            <option>Coffret Découverte — 450 MAD</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group"><label>NOTE</label><textarea placeholder="Quantité, demande spéciale..."></textarea></div>
+      <button class="btn-order" onclick="submitOrderModal()">ENVOYER SUR WHATSAPP →</button>
+    </div>
+  </div>
+</div>
+
+<a href="https://wa.me/212684211599" target="_blank" class="wa-float">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+const products=[
+  {name:'Ambre Noir',price:'420 MAD',famille:'oriental',genre:'unisexe',badge:'BEST SELLER',img:'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400&q=80',note:'ORIENTAL · 100ML'},
+  {name:'Rose Éternelle',price:'380 MAD',famille:'floral',genre:'femme',img:'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&q=80',note:'FLORAL · 100ML'},
+  {name:'Bleu Infini',price:'350 MAD',famille:'aquatique',genre:'homme',badge:'NOUVEAU',img:'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400&q=80',note:'AQUATIQUE · 100ML'},
+  {name:'Oud Royal',price:'550 MAD',famille:'oriental',genre:'unisexe',img:'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=400&q=80',note:'ORIENTAL · 100ML'},
+  {name:'Musc Doré',price:'390 MAD',famille:'musqué',genre:'femme',img:'https://images.unsplash.com/photo-1590156546374-27cfc04aa17e?w=400&q=80',note:'MUSQUÉ · 100ML'},
+  {name:'Cèdre Atlas',price:'410 MAD',famille:'boisé',genre:'homme',img:'https://images.unsplash.com/photo-1563170352-4ea44c2c1abb?w=400&q=80',note:'BOISÉ · 100ML'},
+  {name:'Iris Blanc',price:'440 MAD',famille:'floral',genre:'femme',badge:'EXCLUSIF',img:'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&q=80',note:'FLORAL · 100ML'},
+  {name:'Cuir Noir',price:'480 MAD',famille:'boisé',genre:'homme',img:'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&q=80',note:'BOISÉ · 100ML'},
+  {name:'Fleur de Soie',price:'360 MAD',famille:'floral',genre:'femme',img:'https://images.unsplash.com/photo-1601379760883-1bb497c558e0?w=400&q=80',note:'FLORAL · 100ML'},
+  {name:'Nuit Dorée',price:'520 MAD',famille:'oriental',genre:'unisexe',img:'https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=400&q=80',note:'ORIENTAL · 100ML'},
+];
+
+let cur=0;const tot=4;
+function goToSlide(n){
+  document.getElementById('slide-'+cur).classList.remove('active');
+  document.querySelectorAll('.dot')[cur].classList.remove('active');
+  cur=n;
+  document.getElementById('slide-'+cur).classList.add('active');
+  document.querySelectorAll('.dot')[cur].classList.add('active');
+  document.getElementById('hero-counter').textContent=String(cur+1).padStart(2,'0')+' / 0'+tot;
+}
+setInterval(()=>goToSlide((cur+1)%tot),3000);
+
+let tx=0;
+document.querySelector('.hero').addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+document.querySelector('.hero').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50) goToSlide(dx<0?(cur+1)%tot:(cur-1+tot)%tot);
+},{passive:true});
+
+function toggleMenu(){document.getElementById('mobile-menu').classList.toggle('open')}
+
+function showPage(page){
+  document.getElementById('home-page').style.display=page==='home'?'':'none';
+  document.getElementById('catalog-page').style.display=page==='catalog'?'':'none';
+  window.scrollTo(0,0);
+  if(page==='catalog'){renderCatalog(products);}
+}
+
+function renderCatalog(list){
+  document.getElementById('catalog-grid').innerHTML=list.map(p=>`
+    <div class="product-card" onclick="openOrderModal()">
+      <div class="product-img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        ${p.badge?`<div class="product-badge">${p.badge}</div>`:''}
+      </div>
+      <div class="product-note">${p.note}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price}</div>
+    </div>`).join('');
+  document.getElementById('catalog-count').textContent=list.length+' parfum'+(list.length>1?'s':'');
+}
+
+function filterCatalog(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const familles=[...document.querySelectorAll('.catalog-sidebar input')].filter(i=>i.checked&&['oriental','floral','aquatique','boisé','musqué'].includes(i.value)).map(i=>i.value);
+  const genres=[...document.querySelectorAll('.catalog-sidebar input')].filter(i=>i.checked&&['femme','homme','unisexe'].includes(i.value)).map(i=>i.value);
+  renderCatalog(products.filter(p=>(!q||p.name.toLowerCase().includes(q))&&familles.includes(p.famille)&&genres.includes(p.genre)));
+}
+
+function openOrderModal(){document.getElementById('modal').classList.add('open')}
+function closeModal(e){if(e.target.id==='modal')document.getElementById('modal').classList.remove('open')}
+
+function buildMsg(sel){
+  const ins=[...sel.querySelectorAll('input,select,textarea')];
+  return encodeURIComponent(`Bonjour MISTIMI !\n\nNom : ${ins[0]?.value||''} ${ins[1]?.value||''}\nTél : ${ins[2]?.value||''}\nCommande : ${ins[3]?.value||''}\nNote : ${ins[4]?.value||''}\n\nMerci !`);
+}
+function submitOrderModal(){window.open('https://wa.me/212684211599?text='+buildMsg(document.querySelector('#modal')),'_blank');document.getElementById('modal').classList.remove('open')}
+function submitOrderMain(){window.open('https://wa.me/212684211599?text='+buildMsg(document.querySelector('.form-section')),'_blank')}
+</script>
+</body>
+</html>

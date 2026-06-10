@@ -403,6 +403,8 @@ footer{
 
 /* ── CATALOG PAGE ──────────────────────────────────────────── */
 #catalog-page{display:none;min-height:100vh;padding-top:var(--nav-h)}
+#home-page.hidden{display:none!important}
+#catalog-page.visible{display:block!important}
 .catalog-layout{display:flex;flex-direction:column}
 .catalog-sidebar{
   padding:24px;border-bottom:1px solid var(--mist);
@@ -808,7 +810,7 @@ footer{
   </div>
   </div>
   <div class="browse-row">
-    <button class="btn-browse-all" onclick="showPage('catalog');return false;">VOIR TOUTE LA COLLECTION →</button>
+    <button class="btn-browse-all" onclick="showPage('catalog')">VOIR TOUTE LA COLLECTION →</button>
   </div>
 </div>
 
@@ -1211,14 +1213,23 @@ function toggleMenu(){document.getElementById('mobile-menu').classList.toggle('o
 function showPage(page){
   var hp=document.getElementById('home-page');
   var cp=document.getElementById('catalog-page');
-  if(hp) hp.style.display=page==='home'?'block':'none';
-  if(cp) cp.style.display=page==='catalog'?'block':'none';
-  window.scrollTo(0,0);
   if(page==='catalog'){
-    // Reset filters to all checked
+    hp.classList.add('hidden');
+    cp.classList.add('visible');
+    cp.style.display='block';
+    hp.style.display='none';
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
     document.querySelectorAll('.catalog-sidebar input[type="checkbox"]').forEach(function(c){c.checked=true;});
     document.getElementById('search-input').value='';
     renderCatalog(products);
+  } else {
+    cp.classList.remove('visible');
+    hp.classList.remove('hidden');
+    cp.style.display='none';
+    hp.style.display='block';
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
   }
 }
 
@@ -1239,7 +1250,7 @@ function cardHTML(p,idx){
   </div>`;
 }
 function renderCatalog(list){
-  document.getElementById('catalog-grid').innerHTML=list.map(function(p,i){return cardHTML(p,products.indexOf(p));}).join('');
+  document.getElementById('catalog-grid').innerHTML=list.map((p,i)=>cardHTML(p,products.indexOf(p))).join('');
   document.getElementById('catalog-count').textContent=list.length+' parfum'+(list.length>1?'s':'');
 }
 function filterCatalog(){
